@@ -558,6 +558,17 @@ jQuery.extend({
 		var ct = xhr.getResponseHeader("content-type"),
 			xml = type === "xml" || !type && ct && ct.indexOf("xml") >= 0,
 			data = xml ? xhr.responseXML : xhr.responseText;
+			
+		// if we're expecting xml and the content-type is wrong, try to parse the responseText
+		if (xml && !(data && data.documentElement)) {
+			if (window.DOMParser)
+			  data = new DOMParser().parseFromString(xhr.responseText, "text/xml");
+			else { // IE
+				data = new ActiveXObject("Microsoft.XMLDOM");
+				data.async = "false";
+				data.loadXML(xhr.responseText);
+			}
+		}
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
 			throw "parsererror";

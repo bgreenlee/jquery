@@ -1065,6 +1065,22 @@ test("jQuery.ajax - Etag support", function() {
 	});
 });
 
+test("jQuery.ajax - XML with wrong Content-Type", function() {
+	expect(1);
+	stop();
+	jQuery.ajax({
+		url: "data/xml_as_html.php",
+		dataType: "xml",
+		success: function(data) {
+			equals( jQuery("node", data).length, 2, 'nodes in responseXML' );			
+			start();
+		},
+		error: function(data, status) {
+			ok(false, "failed with status: " + status);
+			start();
+		}
+	});
+});
 }
 
 //}
